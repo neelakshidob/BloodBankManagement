@@ -1,0 +1,58 @@
+DECLARE
+  dis_name DiseaseFinder.dFind_name%type;
+  n number := &n; 
+  cursor c1(d number) is select dfind_name from DiseaseFinder where dfind_ID = d;
+BEGIN
+  open c1(n);
+  LOOP
+    fetch c1 into dis_name;
+    exit when c1%notfound;
+    dbms_output.put_line(dis_name);
+  END LOOP;
+  close c1;
+END;
+
+
+
+DECLARE
+  m_id NUMBER;
+BEGIN
+  m_id := &M_id;
+  SELECT rs.reco_Name
+  FROM Recording_Staff rs
+  INNER JOIN Manager m ON rs.reco_ID = m.M_id
+  WHERE m.M_id = m_id;
+END;
+
+
+DECLARE
+  donor_id number := &Enter_Donor_ID;
+  new_blood_group varchar2(10) := '&Enter_New_Blood_Group';
+BEGIN
+  -- Update the donor's blood group
+  UPDATE Donor_1NF_1
+  SET bd_Bgroup = new_blood_group
+  WHERE bd_ID = donor_id;
+  
+  -- Output success message
+  dbms_output.put_line('Donor record updated successfully.');
+END;
+
+DECLARE
+  donor_name varchar2(100);
+  donor_age number;
+BEGIN
+  -- Prompt user for donor name and age
+  donor_name := &Enter_Donor_Name;
+  donor_age := &Enter_Donor_Age;
+  
+  -- Insert new record into Donor_1NF_1 table with user-provided values
+  INSERT INTO Donor_1NF_1 (bd_name, bd_age, bd_sex, bd_Bgroup, bd_reg_date, reco_ID, City_ID)
+  VALUES (donor_name, donor_age, 'Male', 'O+', SYSDATE, 1, 1);
+  
+  -- Output success message
+  dbms_output.put_line('Record successfully inserted.');
+END;
+
+
+
